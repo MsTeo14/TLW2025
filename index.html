@@ -1,37 +1,96 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <!-- this is a commment: you can change the title to anything you want but it is also fine to just leave it
+    <!--
+      This is a template for an Augmented Reality (AR) application
+      using A-Frame and AR.js to display a 3D model on a marker.
     -->
-    <title>template-title</title>
+    <title>Hexane Molecule AR</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="stylesheet" href="styles.css">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/jacksonkoh8/AR.js@99bda004452549e8a7576b9e7afc26992aa0104e/aframe/build/aframe-ar.js"></script>
     <script src="gesture-detector.js"></script>
     <script src="gesture-handler.js"></script>
     <script src="sky.js"></script>
 
-    <!-- this is a comment: the alert below produces a pop up box when loaded to give information to users, 
-     you can edit the message in between the inverted commas or remove it entirely
-    -->
+    <style>
+      /* Styles for the button container */
+      .button-container {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 99;
+      }
+
+      /* Styles for the show/hide button */
+      .toggle-btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        color: white;
+        background-color: #3B82F6;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease;
+      }
+
+      .toggle-btn:hover {
+        background-color: #2563EB;
+      }
+    </style>
+
     <script>
-      window.onload = function () {
-        alert("Android users experiencing extreme camera zoom should go to browser setting, accessibility/webpage view, turn off force enable zoom/pinch to zoom in/out of webpages\n\nClick on X on the top right hand to partially hide background");
-      };
+      // Function to toggle the visibility of the 3D model
+      function toggleModelVisibility() {
+        // Get the A-Frame entity by its ID
+        const model = document.getElementById('hexane-model');
+        
+        // Get the current visible attribute value
+        const isVisible = model.getAttribute('visible');
+        
+        // Toggle the visible attribute
+        // A-Frame entities have a 'visible' attribute that can be set to true or false
+        model.setAttribute('visible', !isVisible);
+        
+        // Update the button text based on the new state
+        const button = document.getElementById('toggle-model-btn');
+        if (model.getAttribute('visible')) {
+          button.textContent = 'Hide 3D Model';
+        } else {
+          button.textContent = 'Show 3D Model';
+        }
+      }
+
+      // We remove the alert() here as it is not a good user experience
+      // and can cause issues in the browser environment.
     </script>
   </head>
 
-  <body> 
-  <div id="skybtn">
-    <button 
-    class="skybtn" 
-    id="skybtn"
-    onclick="skyCTRL()"
-    >X</button>
-  </div>
+  <body>
+    <div id="skybtn">
+      <button
+        class="skybtn"
+        id="skybtn"
+        onclick="skyCTRL()"
+      >X</button>
+    </div>
+
+    <!-- Container for the new show/hide button -->
+    <div class="button-container">
+      <button
+        id="toggle-model-btn"
+        class="toggle-btn"
+        onclick="toggleModelVisibility()"
+      >
+        Hide 3D Model
+      </button>
+    </div>
+
     <a-scene
       arjs="sourceWidth: 1024; sourceHeight: 776; displayWidth: 1024; displayHeight: 776;"
       embedded
@@ -43,16 +102,10 @@
       id="scene"
     >
       <a-assets>
-        <!-- this is a commment: for "id", replace "template" with your exact model name (without file extension) make sure the -obj is immediately behind the model name, 
-          for "src" replace "template" with model name, make sure the .obj is immediately behind the model name,
-          make sure that the model file is placed in the same repository where this index.html file is located
-        -->
         <a-asset-item
           id="hexane-obj"
           src="hexane.obj"
         >
-        <!-- this is a commment: repeat the same for mtl file
-        -->
         </a-asset-item>
         <a-asset-item
           id="hexane-mtl"
@@ -72,21 +125,13 @@
         smoothTolerance="0.1"
         smoothThreshold="1000"
       >
-        
-        <a-sky 
-          id=sky
+        <a-sky
+          id="sky"
           color="#C0C0C0"
           opacity="0"
         >
-        </a-sky>        
-        
-      <!-- this is a commment: for "id", replace "template" with model name, make sure the "-model" is there immediately behind the model name
-        for "obj-model", replace "#template-obj" and "#template-mtl" with model name from a-asset-item above, make sure the # is there immediately in front of the model name and the -obj and -mtl are immediately behind the model name
-        you can leave position unchanged, but you can modify the x y z coordinates to adjust where your model appears above the Hiro Marker, if necessary,
-        you can leave rotation unchanged, but you can modify the x y z rotation to adjust the angle that your model appears above the Hiro Marker, if necessary,
-        you can leave scale unchanged, but you can modify the x y z scale to adjust the size of your model when it first loads, if necessary,
-        OBJ 3D models cannot have animation
-      -->
+        </a-sky>
+
         <a-entity
           id="hexane-model"
           obj-model="obj: #hexane-obj; mtl: #hexane-mtl"
@@ -94,7 +139,8 @@
           rotation="0 0 0"
           scale="0.4 0.4 0.4"
           class="clickable"
-          gesture-handler        
+          gesture-handler
+          visible="true"
         >
         </a-entity>
 
